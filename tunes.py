@@ -1,4 +1,4 @@
-""" VLC based music player
+""" VLC based MP3 music player
 """
 import os
 import time
@@ -17,7 +17,11 @@ def scan_directory(directory):
 
     def given_dir():
         for filename in os.listdir(directory):
-            song_file_names.append(filename)
+            if (filename.lower().find(".mp3") != - 1):
+                song_file_names.append(filename)
+        if len(song_file_names) < 1:
+            print("Please add songs to /songs and reload the program")
+            quit()
         
     if directory == "":
         print("Using Default Directory (/songs)")
@@ -47,7 +51,7 @@ def song_picker():
 
     """
     print("\nWhich song should I play? ")
-    song_number = (input("If nothing is selected, a random song will play:"))
+    song_number = (input("If nothing is selected, a random song will play: "))
     print("")
     if (song_number.lower() == "exit"):
         print("Goodbye...\n")
@@ -117,6 +121,7 @@ def song_info(mut_song, song_name):
 
     ## The code below draws a box around the now playing sign
 
+    # Prints the top border
     print(" " + ("-" * (dash_len - 1)))
     # Prints the now playing section
     print("| Now playing: " + song_name, end="")
@@ -165,9 +170,9 @@ def song_init():
     print("-" * 60)
 
 
-print("\nMUSIC PLAYER (DEBUGING MODE)")
+print("\nMP3 MUSIC PLAYER (DEBUGING MODE)")
 print("=" * 60)
-song_dir = input("Enter songs directory here: ")
+song_dir = input("Enter songs directory here (defaults to /songs): ")
 song_list_dir, song_dir = scan_directory(song_dir)
 exit_command = ""
 while True:

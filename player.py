@@ -34,6 +34,7 @@ def scan_directory(directory):
 
     try:
         given_dir()
+        song_file_names.sort()
         return song_file_names, directory
     except FileNotFoundError:
         print("Not a valid directory! \nUsing default directory instead\n")
@@ -119,8 +120,8 @@ def song_info(mut_song, song_name):
     len_of_song_duration_str = 16
     dash_len = max(len(exit_str) + 1, len(song_name) + len_of_song_duration_str)
 
+    os.system('cls' if os.name == 'nt' else 'clear')
     ## The code below draws a box around the now playing sign
-
     # Prints the top border
     print(" " + ("-" * (dash_len - 1)))
     # Prints the now playing section
@@ -163,14 +164,13 @@ def song_init():
     vlc_song.play()
     # During debug mode, duration flag does is not enabled
     duration = song_info(mut_song, song_name)
-    print("DEBUG MODE WILL ONLY PLAY FIRST 10 SECONDS OF SONG")
-    time.sleep(10)
+    time.sleep(duration)
     vlc_song.stop()
     print("\nSong Finished!\n")
     print("-" * 60)
 
 
-print("\nMP3 MUSIC PLAYER (DEBUGING MODE)")
+print("\nMP3 MUSIC PLAYER (DEBUGGING MODE)")
 print("=" * 60)
 song_dir = input("Enter songs directory here (defaults to /songs): ")
 song_list_dir, song_dir = scan_directory(song_dir)

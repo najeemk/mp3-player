@@ -3,8 +3,12 @@
 import os
 import time
 import vlc
+import sys
 from mutagen.mp3 import MP3
 from random import randint
+from threading import Thread
+
+vlc_song = None
 
 def scan_directory(directory):
     """ Returns a list of the songs inside inputted folder.
@@ -113,28 +117,32 @@ def song_info(mut_song, song_name):
         str: song duration in hours, minutes, and seconds
     """
 
-    song_duration = mut_song.info.length
-    exit_str = "| >To stop the song, close the terminal or hit 'ctrl + c'"
-    dur_str = "| Song Duration: " + seconds_to_hms(song_duration)
-    # len_of_song_duration_str measures the length of "| Song Duration: " - 1
-    len_of_song_duration_str = 16
-    dash_len = max(len(exit_str) + 1, len(song_name) + len_of_song_duration_str)
+    def song_dur():
+        print("Starting")
+        start_time = time.time()
+        time.sleep(0.5)
+        while ((time.time() - start_time) < song_duration):
+            os.system('cls' if os.name == 'nt' else 'clear')
+            dur_str = "| Song Duration: " + (seconds_to_hms(time.time() - start_time))
+            print(" " + ("-" * (dash_len - 1)))
+            # Prints the now playing section
+            print("| Now playing: " + song_name, end="")
+            print(" " * abs((dash_len) - len(song_name) - len_of_song_duration_str + 1) + "|" )
+            # Prints the song duration section
+            print(dur_str, end="")
+            print(" " * abs(dash_len - len(dur_str)) + "|")
+            # Prints the exit command
+            print(exit_str, end="")
+            print(" " * abs((dash_len) - len(exit_str)) + "|" )
+            #Prints the bottom border
+            print(" " + ("-" * (dash_len - 1)))
+            time.sleep(1)
 
-    os.system('cls' if os.name == 'nt' else 'clear')
-    ## The code below draws a box around the now playing sign
-    # Prints the top border
-    print(" " + ("-" * (dash_len - 1)))
-    # Prints the now playing section
-    print("| Now playing: " + song_name, end="")
-    print(" " * abs((dash_len) - len(song_name) - len_of_song_duration_str + 1) + "|" )
-    # Prints the song duration section
-    print(dur_str, end="")
-    print(" " * abs(dash_len - len(dur_str)) + "|")
-    # Prints the exit command
-    print(exit_str, end="")
-    print(" " * abs((dash_len) - len(exit_str)) + "|" )
-    #Prints the bottom border
-    print(" " + ("-" * (dash_len - 1)))
+    song_duration = mut_song.info.length
+    len_of_song_duration_str = 16
+    exit_str = "| >To stop the song, close the terminal or hit 'ctrl + c'"
+    dash_len = max(len(exit_str) + 1, len(song_name) + len_of_song_duration_str)
+    song_dur()
 
     return song_duration
 
@@ -155,6 +163,7 @@ def seconds_to_hms(seconds):
 def song_init():
     """ Initalizes new song selection.
     """
+
     print("Enter song number you wish to play, or exit to quit program:\n")
     for counter, e in enumerate(song_list_dir):
         print(str(counter + 1) + ": " + str(e))
@@ -164,7 +173,6 @@ def song_init():
     vlc_song.play()
     # During debug mode, duration flag does is not enabled
     duration = song_info(mut_song, song_name)
-    time.sleep(duration)
     vlc_song.stop()
     print("\nSong Finished!\n")
     print("-" * 60)

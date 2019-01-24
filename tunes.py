@@ -20,6 +20,7 @@ def scan_directory(directory):
             song_file_names.append(filename)
         
     if directory == "":
+        print("Using Default Directory (/songs)")
         directory = str(os.getcwd() + "/songs")
     else:
         directory = directory.strip()
@@ -46,11 +47,11 @@ def song_picker():
 
     """
     print("\nWhich song should I play? ")
-    song_number = (input("If nothing is selected, a random song will play: "))
-    print(song_number)
+    song_number = (input("If nothing is selected, a random song will play:"))
+    print("")
     if (song_number.lower() == "exit"):
-        print("Goodbye...")
-        time.sleep(3)
+        print("Goodbye...\n")
+        time.sleep(1)
         quit()
     try:
         song_number = int(song_number)
@@ -114,14 +115,20 @@ def song_info(mut_song, song_name):
     len_of_song_duration_str = 16
     dash_len = max(len(exit_str) + 1, len(song_name) + len_of_song_duration_str)
 
-    # The code below draws a box around the now playing sign
-    print(" " + ("-" * dash_len) +"\n| Now playing: " + song_name, end="")
+    ## The code below draws a box around the now playing sign
+
+    print(" " + ("-" * (dash_len - 1)))
+    # Prints the now playing section
+    print("| Now playing: " + song_name, end="")
     print(" " * abs((dash_len) - len(song_name) - len_of_song_duration_str + 1) + "|" )
-    print(exit_str, end="")
-    print(" " * abs((dash_len) - len(exit_str)) + "|" )
+    # Prints the song duration section
     print(dur_str, end="")
     print(" " * abs(dash_len - len(dur_str)) + "|")
-    print(" " + ("-" * dash_len))
+    # Prints the exit command
+    print(exit_str, end="")
+    print(" " * abs((dash_len) - len(exit_str)) + "|" )
+    #Prints the bottom border
+    print(" " + ("-" * (dash_len - 1)))
 
     return song_duration
 
@@ -142,24 +149,27 @@ def seconds_to_hms(seconds):
 def song_init():
     """ Initalizes new song selection.
     """
+    print("Enter song number you wish to play, or exit to quit program:\n")
     for counter, e in enumerate(song_list_dir):
         print(str(counter + 1) + ": " + str(e))
     print("exit: Exit program")
     which_song = song_picker()
     vlc_song, mut_song, song_name = current_song(which_song)
     vlc_song.play()
+    # During debug mode, duration flag does is not enabled
     duration = song_info(mut_song, song_name)
+    print("DEBUG MODE WILL ONLY PLAY FIRST 10 SECONDS OF SONG")
     time.sleep(10)
     vlc_song.stop()
     print("\nSong Finished!\n")
+    print("-" * 60)
 
 
-print("\nSong Picker")
-print("-" * 60)
+print("\nMUSIC PLAYER (DEBUGING MODE)")
+print("=" * 60)
 song_dir = input("Enter songs directory here: ")
 song_list_dir, song_dir = scan_directory(song_dir)
 exit_command = ""
 while True:
     song_init()
-    time.sleep(3)
-os.system('cls' if os.name == 'nt' else 'clear')
+    time.sleep(1)

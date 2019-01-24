@@ -1,7 +1,7 @@
 # MP3 Player
 A simple, small, terminal based MP3 music player built in Python.
 ## Installation <br>
-First install VLC media player. Next, install the VLC and mutage packages on pip: <br>
+First install VLC media player. Next, you will need to install the VLC and Mutagen packages on pip: <br>
 `pip3 install vlc %% pip3 install mutagen` <br>
 Make sure to create a /songs folder, if not already existing, on the same directory as the player.py file
 ## Usage <br>

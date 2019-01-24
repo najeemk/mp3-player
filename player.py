@@ -6,9 +6,9 @@ import vlc
 import sys
 from mutagen.mp3 import MP3
 from random import randint
-from threading import Thread
 
 vlc_song = None
+shuffle = False
 
 def scan_directory(directory):
     """ Returns a list of the songs inside inputted folder.
@@ -55,6 +55,9 @@ def song_picker():
         int: number of song selected
 
     """
+    global shuffle
+    if shuffle == True:
+        return randint(0, len(song_list_dir) - 1)
     print("\nWhich song should I play? ")
     song_number = (input("If nothing is selected, a random song will play: "))
     print("")
@@ -62,6 +65,9 @@ def song_picker():
         print("Goodbye...\n")
         time.sleep(1)
         quit()
+    elif (song_number.lower() == "shuffle"):
+        shuffle = True
+        return randint(0, len(song_list_dir) - 1)
     try:
         song_number = int(song_number)
         song_number = song_number - 1
@@ -123,11 +129,14 @@ def song_info(mut_song, song_name):
         time.sleep(0.5)
         while ((time.time() - start_time) < song_duration):
             os.system('cls' if os.name == 'nt' else 'clear')
-            dur_str = "| Song Duration: " + (seconds_to_hms(time.time() - start_time))
+            dur_str = "| Song Duration: " + ( \
+                seconds_to_hms(time.time() - start_time) + "/" + \
+                 seconds_to_hms(song_duration))
             print(" " + ("-" * (dash_len - 1)))
             # Prints the now playing section
             print("| Now playing: " + song_name, end="")
-            print(" " * abs((dash_len) - len(song_name) - len_of_song_duration_str + 1) + "|" )
+            print(" " * abs((dash_len) - len(song_name) - \
+            len_of_song_duration_str + 1) + "|" )
             # Prints the song duration section
             print(dur_str, end="")
             print(" " * abs(dash_len - len(dur_str)) + "|")
@@ -164,15 +173,19 @@ def song_init():
     """ Initalizes new song selection.
     """
 
-    print("Enter song number you wish to play, or exit to quit program:\n")
-    for counter, e in enumerate(song_list_dir):
-        print(str(counter + 1) + ": " + str(e))
-    print("exit: Exit program")
-    which_song = song_picker()
+    if shuffle == True:
+        which_song = song_picker()
+    else:
+        print("Enter song number you wish to play, or exit to quit program:\n")
+        for counter, e in enumerate(song_list_dir):
+            print(str(counter + 1) + ": " + str(e))
+        print("shuffle: Shuffle songs")
+        print("exit: Exit program")
+        which_song = song_picker()
     vlc_song, mut_song, song_name = current_song(which_song)
     vlc_song.play()
-    # During debug mode, duration flag does is not enabled
-    duration = song_info(mut_song, song_name)
+    # During debug mode, song_duration flag does is not enabled
+    song_info(mut_song, song_name)
     vlc_song.stop()
     print("\nSong Finished!\n")
     print("-" * 60)

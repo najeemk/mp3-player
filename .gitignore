@@ -11,3 +11,7 @@ Thumbs.db
 # Potentially copyrighted files #
 ######################
 *.mp3
+
+# Virtual Environment #
+######################
+/env

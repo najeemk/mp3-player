@@ -172,7 +172,7 @@ def seconds_to_hms(seconds):
 def song_init():
     """ Initalizes new song selection.
     """
-
+    
     if shuffle == True:
         which_song = song_picker()
     else:
